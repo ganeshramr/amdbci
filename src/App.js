@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Welcome to amDB asdfasdf</h1>
+          <h1 className="App-title">Welcome to amDB</h1>
         </header>
         <AMNew />
       </div>
