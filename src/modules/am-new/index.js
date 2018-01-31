@@ -240,7 +240,6 @@ class AMNew extends Component {
         const { 
             readyToCompileAndCreateContract,
             statusMessage,
-            thisTxHash,
             thisAddress,
             make, model, year, price, vin
         } = this.state;
