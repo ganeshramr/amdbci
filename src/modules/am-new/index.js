@@ -15,6 +15,7 @@ class AMNew extends Component {
             amNewContract: undefined,
             statusMessage: 'Connecting to block chain plese wait...',
             thisTxHash: undefined,
+            contractABI: undefined,
             thisAddress: undefined,
             make: 'Honda',
             model: 'CRV',
@@ -188,7 +189,8 @@ class AMNew extends Component {
                         console.log('newContract Mined', newContract);
                         console.log('Car Details', newContract.carDetails());
                         this.setState({
-                            statusMessage: 'Contract Deployed ' + newContract.carDetails(),
+                            statusMessage: 'Contract deployed successfully!!! ',
+                            contractABI: abi,
                             thisAddress: newContract.address
                         });
 
@@ -241,6 +243,7 @@ class AMNew extends Component {
             readyToCompileAndCreateContract,
             statusMessage,
             thisAddress,
+            contractABI,
             make, model, year, price, vin
         } = this.state;
 
@@ -251,7 +254,7 @@ class AMNew extends Component {
             </div>
             {(readyToCompileAndCreateContract && web3.isConnected()) && <div>
 
-                <h3>Test Deploy contract to private block chain</h3> <br /><br />
+                <h3>Test Deploy contract</h3> <br /><br />
 
                 <div>
 
@@ -263,7 +266,7 @@ class AMNew extends Component {
 
                     Price: <input type = "text" value = { price } onChange = { this.onCarDataChange.bind(this, 'price') } /> <br /><br /> 
 
-                    Vin: <input type = "text" value = { vin } onChange = { this.onCarDataChange.bind(this, 'vin') } /> <br /><br /> 
+                    VIN: <input type = "text" value = { vin } onChange = { this.onCarDataChange.bind(this, 'vin') } /> <br /><br /> 
 
                     <br />
 
@@ -272,7 +275,12 @@ class AMNew extends Component {
 
                 <div>
                     <p>{statusMessage}</p> <br/>
-                    {thisAddress && <p>Contract Address: {thisAddress}</p>} <br/>
+
+                    {thisAddress && <p>Contract Address: {thisAddress}</p>}
+
+                    {contractABI && JSON.stringify(contractABI, 4)}
+
+
                 </div>
             </div>}
 
