@@ -248,11 +248,11 @@ class AMNew extends Component {
         return (
         <div>
             <div>                
-                <p>{statusMessage}</p> <br/>
+                {(!web3.isConnected()) && <p>Please start your local block chain</p>} <br/>
             </div>
             {(readyToCompileAndCreateContract && web3.isConnected()) && <div>
 
-                <h3>Enter Auto mobile details</h3> <br /><br />
+                <h3>Test Deploy contract to private block chain</h3> <br /><br />
 
                 <div>
 
@@ -272,7 +272,7 @@ class AMNew extends Component {
                 </div>
 
                 <div>
-                    {thisTxHash && <p>Transaction Hash: {thisTxHash}</p>} <br/>
+                    <p>{statusMessage}</p> <br/>
                     {thisAddress && <p>Contract Address: {thisAddress}</p>} <br/>
                 </div>
             </div>}
