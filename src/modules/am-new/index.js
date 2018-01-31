@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AMNewContract from './am-new-contract.sol';
 import { web3 } from '../../web3';
 import _ from 'lodash';
-
+import loader from './img/tenor.gif';
 
 class AMNew extends Component {
 
@@ -17,6 +17,8 @@ class AMNew extends Component {
             thisTxHash: undefined,
             contractABI: undefined,
             thisAddress: undefined,
+            isDeployInProgress: undefined,
+            showABI: false,
             make: 'Honda',
             model: 'CRV',
             year: '2010',
@@ -25,6 +27,8 @@ class AMNew extends Component {
         }
 
         this.compileAndDeployCarContract = this.compileAndDeployCarContract.bind(this);
+        this.toogleABI = this.toogleABI.bind(this);
+
     }
 
     
@@ -72,7 +76,8 @@ class AMNew extends Component {
         console.log('Compile And Deploy started');
         
         this.setState({
-            statusMessage: 'Compiling and deploying car contract'
+            statusMessage: 'Compiling and deploying car contract',
+            isDeployInProgress: true
         });
     
         var result = compiler.compile(this.amNewConctract(), optimize);
@@ -166,7 +171,8 @@ class AMNew extends Component {
 
                     console.log('deployment err', err);
                     this.setState({
-                        statusMessage: 'deployment error: ' + err
+                        statusMessage: 'deployment error: ' + err,
+                        isDeployInProgress: false
                     });
 
                     return null;
@@ -189,7 +195,8 @@ class AMNew extends Component {
                         console.log('newContract Mined', newContract);
                         console.log('Car Details', newContract.carDetails());
                         this.setState({
-                            statusMessage: 'Contract deployed successfully!!! ',
+                            statusMessage: 'Contract deployed successfully !!! ',
+                            isDeployInProgress: false,
                             contractABI: abi,
                             thisAddress: newContract.address
                         });
@@ -224,8 +231,14 @@ class AMNew extends Component {
         return this.state.compiledAMNewContract;
     }
 
+    toogleABI() {
+        this.setState({
+            showABI : !this.state.showABI
+        })
+    }
+
     onCarDataChange(field, { target }) {
-        const { value } = target,
+        const { value } = target,   
             { make, model, year, price, vin } = { ...this.state },
             updateState = {make, model, year, price, vin};
 
@@ -244,45 +257,76 @@ class AMNew extends Component {
             statusMessage,
             thisAddress,
             contractABI,
+            showABI,
+            isDeployInProgress,
             make, model, year, price, vin
         } = this.state;
 
         return (
         <div>
-            <div>                
-                {(!web3.isConnected()) && <p>Please start your local block chain</p>} <br/>
-            </div>
             {(readyToCompileAndCreateContract && web3.isConnected()) && <div>
 
-                <h3>Test Deploy contract</h3> <br /><br />
+                <div class = "container">
+                    <div class = "row">
+                        <h3>Deploy sample contract</h3> <br />
+                        <div className = "col-sm-6">
+                            <div class="form-group">
 
-                <div>
+                                <label>Make</label>
+                                <input type = "text"  class = "form-control" value = { make } onChange = { this.onCarDataChange.bind(this, 'make') } /> <br />
+                                
+                                <label>Model</label>
+                                <input type = "text" class = "form-control"  value = { model } onChange = { this.onCarDataChange.bind(this, 'model') } /> <br />
 
-                    Make: <input type = "text" value = { make } onChange = { this.onCarDataChange.bind(this, 'make') } /> <br /><br />
-                    
-                    Model: <input type = "text" value = { model } onChange = { this.onCarDataChange.bind(this, 'model') } /> <br /><br /> 
+                                <label>Year</label>
+                                <input type = "text"  class = "form-control" value = { year } onChange = { this.onCarDataChange.bind(this, 'year') } /> <br />
 
-                    Year: <input type = "text" value = { year } onChange = { this.onCarDataChange.bind(this, 'year') } /> <br /><br /> 
+                                <label>Price</label>
+                                <input type = "text" class = "form-control" value = { price } onChange = { this.onCarDataChange.bind(this, 'price') } /> <br />
 
-                    Price: <input type = "text" value = { price } onChange = { this.onCarDataChange.bind(this, 'price') } /> <br /><br /> 
+                                <label>VIN</label>
+                                <input type = "text" class = "form-control" value = { vin } onChange = { this.onCarDataChange.bind(this, 'vin') } /> <br />
 
-                    VIN: <input type = "text" value = { vin } onChange = { this.onCarDataChange.bind(this, 'vin') } /> <br /><br /> 
+                                <input type = "button" className = "btn btn-primary" value = "Deploy Contract" onClick = { this.compileAndDeployCarContract } />
+                            </div>
+                        </div>
+                        <div className = "col-sm-6">
 
-                    <br />
+                            {isDeployInProgress && <img src = {loader} alt = "" />}
 
-                    <input type = "button" value = "Deploy" onClick = { this.compileAndDeployCarContract } /> <br /> <br />
-                </div>
+                            {isDeployInProgress === false && <div>
+                                <span className = "label-pill label-success">
+                                    <h3>
+                                        {statusMessage && statusMessage}
+                                    </h3>
+                                </span>
 
-                <div>
-                    <p>{statusMessage}</p> <br/>
+                                <span className = "badge badge-danger" data-toggle = "collapse" data-target = "#showabi">
+                                    <h4>
+                                        {thisAddress && thisAddress}
+                                    </h4>
+                                </span><br /><br />
 
-                    {thisAddress && <p>Contract Address: {thisAddress}</p>}
+                                {contractABI && <button type = "button" className = "btn btn-primary" onClick = {this.toogleABI}>Show ABI</button>}
+                                
+                                <br /><br />
 
-                    {contractABI && JSON.stringify(contractABI, 4)}
+                                {showABI && <div>
+                                    {JSON.stringify(contractABI, 4)}    
+                                </div>}
+
+                            </div>}
 
 
-                </div>
+                        </div>
+                    </div>
+                </div>                
+
+
+
             </div>}
+
+
 
         </div>
         );

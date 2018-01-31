@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
 import './App.css';
 import AMNew from './modules/am-new';
+import { web3 } from './web3';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Private blockchain administration</h1>
-        </header>
+
+      <div>
+        <div className = "jumbotron jumbotron-fluid">
+          <div className = "container">
+            <h2 className = "display-4">Administrate your Private Blockchain</h2>
+            
+            {web3.isConnected() && <p className = "lead">Ready to deploy contract</p>}
+
+            {!web3.isConnected() && <p className = "lead">Please start your private blockchain</p>}
+          </div>
+        </div>
+
         <AMNew />
       </div>
+
     );
   }
 }
