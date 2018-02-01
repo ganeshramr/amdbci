@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AMNewContract from './am-new-contract.sol';
-import { web3 } from '../../web3';
+import { web3, web3Connection } from '../../web3';
 import _ from 'lodash';
 import loader from './img/tenor.gif';
 
@@ -17,6 +17,7 @@ class AMNew extends Component {
             thisTxHash: undefined,
             contractABI: undefined,
             thisAddress: undefined,
+            connected: undefined,
             isDeployInProgress: undefined,
             showABI: false,
             make: 'Honda',
@@ -39,6 +40,32 @@ class AMNew extends Component {
 
         this.setupCompiler();
 
+        this.web3ConnectionWatch();
+
+    }
+
+    web3ConnectionWatch() {
+
+        let connected = true;
+
+        setInterval(() => {
+
+            if(!web3.isConnected()) {
+
+                connected = false;
+
+                this.setState({ connected })
+
+                web3Connection.retry();
+
+            } else if(!connected) {
+
+                connected = true;
+
+                this.setState({ connected })
+            }
+
+        }, 3000);
     }
 
     setupCompiler() {
@@ -326,7 +353,9 @@ class AMNew extends Component {
 
             </div>}
 
-
+            {(!(readyToCompileAndCreateContract && web3.isConnected())) && <p align = "center">
+                    <img src = {loader} alt = "" />
+            </p>}
 
         </div>
         );
