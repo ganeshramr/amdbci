@@ -268,7 +268,7 @@ class AMNew extends Component {
 
                 <div class = "container">
                     <div class = "row">
-                        <h3>Deploy sample contract</h3> <br />
+                        <h3>Deploy smart contract</h3> <br />
                         <div className = "col-sm-6">
                             <div class="form-group">
 

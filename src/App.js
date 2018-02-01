@@ -10,11 +10,11 @@ class App extends Component {
       <div>
         <div className = "jumbotron jumbotron-fluid">
           <div className = "container">
-            <h2 className = "display-4">Private Blockchain Admin Interface</h2>
+            <h2 className = "display-4">Heroku Private Blockchain Admin</h2>
             
-            {web3.isConnected() && <p className = "lead">Ready to deploy contract</p>}
+            {web3.isConnected() && <p className = "lead">Heroku Smart Contract Administration</p>}
 
-            {!web3.isConnected() && <p className = "lead">Please start your private blockchain</p>}
+            {!web3.isConnected() && <p className = "lead">Initiating the smart contract instance</p>}
           </div>
         </div>
 
