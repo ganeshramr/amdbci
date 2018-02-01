@@ -307,13 +307,13 @@ class AMNew extends Component {
                                     </h4>
                                 </span><br /><br />
 
-                                {contractABI && <button type = "button" className = "btn btn-primary" onClick = {this.toogleABI}>Show ABI</button>}
+                                {contractABI && <button type = "button" className = "btn btn-primary" onClick = {this.toogleABI}>{showABI && "Hide ABI"}{!showABI && "Show ABI"}</button>}
                                 
                                 <br /><br />
 
-                                {showABI && <div>
-                                    {JSON.stringify(contractABI, 4)}    
-                                </div>}
+                                {showABI && <textarea className = "form-control" rows = "9">
+                                    {JSON.stringify(contractABI, 4)}
+                                </textarea>}
 
                             </div>}
 
