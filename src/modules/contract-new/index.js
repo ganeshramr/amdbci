@@ -346,12 +346,18 @@ class ContractNew extends Component {
 
                                 <textarea className = "form-control" rows = "21" value = { amNewContract } onChange = { this.onFormDataChange.bind(this, 'amNewContract') } />
 
-                                <input type = "button" className = "btn btn-primary" value = "Compile Contract" onClick = { this.compileContract } />
+                                <br />
+
+                                {!result && <input type = "button" className = "btn btn-primary" value = "Compile Contract" onClick = { this.compileContract } />}
 
                                 {result && <div>
+                                    
+                                    <input type = "button" className = "btn btn-primary" value = "Compile Contract" onClick = { this.compileContract } />
+                                    &nbsp;&nbsp;&nbsp; Select contract &nbsp;
                                     <select value = { contractName } onChange = { this.onFormDataChange.bind(this, 'contractName') }>
                                         {this.getContractOptions()}
                                     </select>
+                                    &nbsp;&nbsp;
                                     <input type = "button" className = "btn btn-primary" value = "Deploy Contract" onClick = { this.deployContract } />
                                 </div>}
                             </div>
