@@ -143,7 +143,7 @@ class ContractNew extends Component {
                     this.setState({
                         result,
                         statusMessage: 'Compilation done successfully',
-                        contractName: ':Car',
+                        contractName: Object.keys(result.contracts)[0],
                         isDeployInProgress: false,
                         isCompileError: false
                     });
@@ -170,6 +170,8 @@ class ContractNew extends Component {
 
     getGasPriceAndEstimate(result, contractName, callBackGasPriceAndEstimate) {
 
+        console.log('Contracts', result.contracts);
+        console.log('Contract Name', result.contractName);
         console.log('Get price', result.contracts[contractName]);
         const bytecode = '0x' + result.contracts[contractName].bytecode;
 
