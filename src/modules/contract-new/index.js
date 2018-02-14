@@ -21,12 +21,7 @@ class ContractNew extends Component {
             connected: undefined,
             result: undefined,
             isDeployInProgress: undefined,
-            showABI: false,
-            make: 'Honda',
-            model: 'CRV',
-            year: '2010',
-            price: '7500',
-            vin: 'some vin number'
+            showABI: false
         }
 
         this.compileContract = this.compileContract.bind(this);

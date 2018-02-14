@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import AMNewContract from './am-new-contract.sol';
+import AMNewContract from '../resource/am-new-contract.sol';
 import { web3, web3Connection } from '../../web3';
 import _ from 'lodash';
 import loader from '../img/tenor.gif';
