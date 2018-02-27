@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-const blockChainLocation = 'http://ofs-blockchain-testng.herokuapp.com/';
+const blockChainLocation = 'http://private-blockchain.herokuapp.com/';
 
 export const web3 = new Web3(new Web3.providers.HttpProvider(blockChainLocation));
 
