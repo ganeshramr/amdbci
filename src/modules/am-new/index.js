@@ -32,8 +32,8 @@ class AMNew extends Component {
 
     }
 
-    
-    
+
+
     componentWillMount() {
 
         this.readAMNewContract(AMNewContract);
@@ -95,28 +95,28 @@ class AMNew extends Component {
     }
 
     compileAndDeployCarContract() {
-        
+
         const optimize = 1,
             compiler = this.compiler,
             { make, model, year, price, vin } = this.state;
 
         console.log('Compile And Deploy started');
-        
+
         this.setState({
             statusMessage: 'Compiling and deploying car contract',
             isDeployInProgress: true
         });
-    
+
         var result = compiler.compile(this.amNewConctract(), optimize);
 
         if(result.errors && JSON.stringify(result.errors).match(/error/i)) {
-            
+
             this.setState({
                 statusMessage: JSON.stringify(result.errors)
             });
 
             return false;
-        } 
+        }
 
         this.getGasPriceAndEstimate(result, (err, gasPrice, gasEstimate) => {
             this.deployCarContract(result, gasPrice, gasEstimate, make, model, year, price, vin);
@@ -129,8 +129,8 @@ class AMNew extends Component {
 
         const bytecode = '0x' + result.contracts[':Car'].bytecode;
 
-        web3.eth.getGasPrice((err, gasPrice) => {                
-        
+        web3.eth.getGasPrice((err, gasPrice) => {
+
             if(err) {
 
                 console.log('deployment web3.eth.getGasPrice error', err);
@@ -142,7 +142,7 @@ class AMNew extends Component {
                 callBackGasPriceAndEstimate(err, 0, 0);
 
             } else {
-                
+
                 console.log('current gasPrice (gas / ether)', gasPrice);
 
                 web3.eth.estimateGas({data: bytecode}, (err, gasEstimate) => {
@@ -162,10 +162,10 @@ class AMNew extends Component {
                         console.log('deployment web3.eth.estimateGas amount', gasEstimate);
                         callBackGasPriceAndEstimate(err, gasPrice, gasEstimate);
 
-                    }                    
+                    }
                 });
             }
-        });        
+        });
     }
 
     deployCarContract(result, gasPrice, gasEstimate, make, model, year, price, vin) {
@@ -175,11 +175,11 @@ class AMNew extends Component {
             bytecode = '0x' + carContract.bytecode,
             myContract = web3.eth.contract(abi);
 
-        console.log('carContract', carContract);              
+        console.log('carContract', carContract);
         console.log('bytecode', JSON.stringify(bytecode));
         console.log('abi', JSON.stringify(abi));
         console.log('myContract', myContract);
-                        
+
         const inflatedGasCost = Math.round(1.2 * gasEstimate),
             ethCost = gasPrice * inflatedGasCost / 10000000000 / 100000000,
             warnings = result.errors ? JSON.stringify(result.errors) + ',' : ''; // show warnings if they exist
@@ -188,9 +188,9 @@ class AMNew extends Component {
             statusMessage: warnings + 'Compiled! (inflated) estimateGas amount: ' + inflatedGasCost + ' (' + ethCost+ ' Ether)'
         });
 
-        myContract.new(make, model, year, price, vin, web3.eth.accounts[0], 
-            {from:web3.eth.accounts[0],data:bytecode,gas:inflatedGasCost}, 
-            (err, newContract) => { 
+        myContract.new(make, model, year, price, vin, web3.eth.accounts[0],
+            {from:web3.eth.accounts[0],data:bytecode,gas:inflatedGasCost},
+            (err, newContract) => {
 
                 console.log('newContract', newContract);
 
@@ -205,10 +205,10 @@ class AMNew extends Component {
                     return null;
 
                 } else {
-        
+
                     if(!newContract.address) {
 
-                        console.log('Contract transaction send: TransactionHash waiting for mining', newContract.transactionHash);
+                        console.log('Contract is sent to Blockchain : Be Patient until it is Mined', newContract.transactionHash);
 
                         this.setState({
                             statusMessage: 'Contract transaction send and waiting for mining...',
@@ -218,7 +218,7 @@ class AMNew extends Component {
 
                     } else {
 
-                        console.log('Contract mined! Address', newContract.address);
+                        console.log('YAY!!! Contract is mined! Address', newContract.address);
                         console.log('newContract Mined', newContract);
                         console.log('Car Details', newContract.carDetails());
                         this.setState({
@@ -265,7 +265,7 @@ class AMNew extends Component {
     }
 
     onCarDataChange(field, { target }) {
-        const { value } = target,   
+        const { value } = target,
             { make, model, year, price, vin } = { ...this.state },
             updateState = {make, model, year, price, vin};
 
@@ -274,12 +274,12 @@ class AMNew extends Component {
         updateState.year = (parseInt(updateState.year, 10) || 0).toString();
         updateState.price = parseInt(updateState.price, 10) || 0;
 
-        this.setState(updateState);       
+        this.setState(updateState);
     }
-    
+
     render() {
 
-        const { 
+        const {
             readyToCompileAndCreateContract,
             statusMessage,
             thisAddress,
@@ -301,7 +301,7 @@ class AMNew extends Component {
 
                                 <label>Make</label>
                                 <input type = "text"  class = "form-control" value = { make } onChange = { this.onCarDataChange.bind(this, 'make') } /> <br />
-                                
+
                                 <label>Model</label>
                                 <input type = "text" class = "form-control"  value = { model } onChange = { this.onCarDataChange.bind(this, 'model') } /> <br />
 
@@ -335,7 +335,7 @@ class AMNew extends Component {
                                 </span><br /><br />
 
                                 {contractABI && <button type = "button" className = "btn btn-primary" onClick = {this.toogleABI}>{showABI && "Hide ABI"}{!showABI && "Show ABI"}</button>}
-                                
+
                                 <br /><br />
 
                                 {showABI && <textarea className = "form-control" rows = "9">
@@ -347,7 +347,7 @@ class AMNew extends Component {
 
                         </div>
                     </div>
-                </div>                
+                </div>
 
 
 
