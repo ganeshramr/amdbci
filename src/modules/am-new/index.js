@@ -50,15 +50,16 @@ class AMNew extends Component {
 
         setInterval(() => {
 
-            if(!web3.isConnected()) {
+            if(web3Connection.blockChainConfiguredLocation !== undefined) {
 
                 connected = false;
 
                 this.setState({ connected })
-
+                alert(web3.blockChainConfiguredLocation);
                 web3Connection.retry();
 
             } else if(!connected) {
+
 
                 connected = true;
 

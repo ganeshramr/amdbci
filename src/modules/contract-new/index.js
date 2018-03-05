@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { web3, web3Connection, web3Manager } from '../../web3';
+import { web3, web3Connection, web3Manager, blockChainConfiguredLocation } from '../../web3';
 import AMNewContract from '../resource/am-new-contract.sol';
 import _ from 'lodash';
 import loader from '../img/tenor.gif';
@@ -31,8 +31,8 @@ class ContractNew extends Component {
 
     }
 
-    
-    
+
+
     componentWillMount() {
 
         this.readAMNewContract(AMNewContract);
@@ -60,23 +60,35 @@ class ContractNew extends Component {
 
     web3ConnectionWatch() {
 
-        let connected = true;
+        let notConnected = true;
 
         setInterval(() => {
 
-            if(!web3.isConnected()) {
 
-                connected = false;
 
-                this.setState({ connected })
+            if((blockChainConfiguredLocation !== undefined) && (notConnected)) {
 
-                web3Connection.retry();
+                console.log('blockChainConfiguredLocation', blockChainConfiguredLocation);
 
-            } else if(!connected) {
 
-                connected = true;
 
-                this.setState({ connected })
+                web3Connection.retry().then((success) => {
+
+                  notConnected = false;
+
+                  this.setState({ connected: true })
+
+                }, (failed) => {
+
+                  notConnected = true;
+
+                  this.setState({ connected: false })
+
+                });
+
+            } else if(!notConnected) {
+
+                this.setState({ connected: true })
             }
 
         }, 3000);
@@ -109,30 +121,30 @@ class ContractNew extends Component {
     }
 
     compileContract() {
-        
+
         const optimize = 1,
             compiler = this.compiler;
 
         console.log('Compile And Deploy started');
-        
+
         this.setState({
-            statusMessage: 'Compiling contract',          
+            statusMessage: 'Compiling contract',
             isDeployInProgress: true
         });
 
-    
+
         return setTimeout(() => {
-            
+
             const result = compiler.compile(this.amNewContract(), optimize);
 
                 if(result.errors && JSON.stringify(result.errors).match(/error/i)) {
-                    
+
                     this.setState({
                         statusMessage: JSON.stringify(result.errors),
                         isDeployInProgress: false,
                         isCompileError: true
                     });
-        
+
                 } else {
 
                     this.setState({
@@ -142,14 +154,14 @@ class ContractNew extends Component {
                         isDeployInProgress: false,
                         isCompileError: false
                     });
-                }             
+                }
         }, 1000);
 
 
     }
 
     deployContract() {
-        
+
         const { result, contractName } = this.state;
 
         this.setState({
@@ -170,8 +182,8 @@ class ContractNew extends Component {
         console.log('Get price', result.contracts[contractName]);
         const bytecode = '0x' + result.contracts[contractName].bytecode;
 
-        web3.eth.getGasPrice((err, gasPrice) => {                
-        
+        web3.eth.getGasPrice((err, gasPrice) => {
+
             if(err) {
 
                 console.log('deployment web3.eth.getGasPrice error', err);
@@ -183,7 +195,7 @@ class ContractNew extends Component {
                 callBackGasPriceAndEstimate(err, 0, 0);
 
             } else {
-                
+
                 console.log('current gasPrice (gas / ether)', gasPrice);
 
                 web3.eth.estimateGas({data: bytecode}, (err, gasEstimate) => {
@@ -203,10 +215,10 @@ class ContractNew extends Component {
                         console.log('deployment web3.eth.estimateGas amount', gasEstimate);
                         callBackGasPriceAndEstimate(err, gasPrice, gasEstimate);
 
-                    }                    
+                    }
                 });
             }
-        });        
+        });
     }
 
     deployNewContract(result, contractName, gasPrice, gasEstimate) {
@@ -216,11 +228,11 @@ class ContractNew extends Component {
             bytecode = '0x' + newContract.bytecode,
             myContract = web3.eth.contract(abi);
 
-        console.log('newContract', newContract);              
+        console.log('newContract', newContract);
         console.log('bytecode', JSON.stringify(bytecode));
         console.log('abi', JSON.stringify(abi));
         console.log('myContract', myContract);
-                        
+
         const inflatedGasCost = Math.round(1.2 * gasEstimate),
             ethCost = gasPrice * inflatedGasCost / 10000000000 / 100000000,
             warnings = result.errors ? JSON.stringify(result.errors) + ',' : ''; // show warnings if they exist
@@ -229,8 +241,8 @@ class ContractNew extends Component {
             statusMessage: warnings + 'Compiled! (inflated) estimateGas amount: ' + inflatedGasCost + ' (' + ethCost+ ' Ether)'
         });
 
-        myContract.new({from:web3.eth.accounts[0],data:bytecode,gas:inflatedGasCost}, 
-            (err, newContract) => { 
+        myContract.new({from:web3.eth.accounts[0],data:bytecode,gas:inflatedGasCost},
+            (err, newContract) => {
 
                 console.log('newContract', newContract);
 
@@ -245,7 +257,7 @@ class ContractNew extends Component {
                     return null;
 
                 } else {
-        
+
                     if(!newContract.address) {
 
                         console.log('Contract transaction send: TransactionHash waiting for mining', newContract.transactionHash);
@@ -299,13 +311,13 @@ class ContractNew extends Component {
     }
 
     onFormDataChange(field, { target }) {
-        const { value } = target,   
+        const { value } = target,
             { amNewContract } = { ...this.state },
             updateState = { amNewContract };
 
         updateState[field] = value;
 
-        this.setState(updateState);       
+        this.setState(updateState);
     }
 
     manageMiner(start) {
@@ -313,10 +325,10 @@ class ContractNew extends Component {
         console.log(web3);
         web3Manager.miner.start();
     }
-    
+
     render() {
 
-        const { 
+        const {
             readyToCompileAndCreateContract,
             statusMessage,
             thisAddress,
@@ -348,7 +360,7 @@ class ContractNew extends Component {
                                 {!result && <input type = "button" className = "btn btn-primary" value = "Compile Contract" onClick = { this.compileContract } />}
 
                                 {result && <div>
-                                    
+
                                     <input type = "button" className = "btn btn-primary" value = "Compile Contract" onClick = { this.compileContract } />
                                     &nbsp;&nbsp;&nbsp; Select contract &nbsp;
                                     <select value = { contractName } onChange = { this.onFormDataChange.bind(this, 'contractName') }>
@@ -377,10 +389,10 @@ class ContractNew extends Component {
                                     <h4>
                                         {thisAddress}
                                     </h4>
-                                </span>}<br /><br />                                
+                                </span>}<br /><br />
 
                                 {contractABI && <button type = "button" className = "btn btn-primary" onClick = {this.toogleABI}>{showABI && "Hide ABI"}{!showABI && "Show ABI"}</button>}
-                                
+
                                 <br /><br />
 
                                 {showABI && <textarea className = "form-control" readOnly value = {JSON.stringify(contractABI, 4)} rows = "9" />}
@@ -390,7 +402,7 @@ class ContractNew extends Component {
 
                         </div>
                     </div>
-                </div>                
+                </div>
 
 
 
