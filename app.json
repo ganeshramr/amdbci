@@ -1,0 +1,12 @@
+{
+  "name": "Blockchain Admin App",
+  "description": "This is the admin interface for Blockchain.",
+  "keywords": [
+    "blockchain",
+    "admin",
+    "nodejs"
+  ],
+  "website": "http://www.objectfrontier.com/",
+  "repository": "https://github.com/ganeshramr/blockchain-admin",
+  "success_url": "/"
+}
