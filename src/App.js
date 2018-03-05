@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './App.css';
 import ContractNew from './modules/contract-new';
-import AMNew from './modules/am-new';
 import { web3 } from './web3';
 
 class App extends Component {
@@ -24,7 +23,6 @@ class App extends Component {
         <BrowserRouter>
             <Switch>
                 <Route exact path='/' component={ContractNew} />
-                <Route exact path='/car' component={AMNew} />
             </Switch>
         </BrowserRouter>
 
