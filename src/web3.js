@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-const blockChainLocation = 'http://private-blockchain.herokuapp.com/';
+const blockChainLocation = 'http://localhost:8545';
 
 export const web3 = new Web3(new Web3.providers.HttpProvider(blockChainLocation));
 
@@ -12,3 +12,4 @@ export const web3Connection = {
         console.log('Web3 Connection Retry', web3);
     }
 }
+
