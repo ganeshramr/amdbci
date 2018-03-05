@@ -8,7 +8,7 @@ export const web3Manager = Web3;
 
 export const web3Connection = {
     retry: () => {
-        web3.setProvider(new Web3.providers.HttpProvider(blockChainLocation));
+        web3.setProvider(new Web3.providers.HttpProvider(process.env.BLOCKCHAIN_URL));
         console.log('Web3 Connection Retry', web3);
     }
 }
