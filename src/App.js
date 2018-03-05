@@ -23,7 +23,7 @@ class App extends Component {
 
         <BrowserRouter>
             <Switch>
-                <Route exact path='/admin' component={ContractNew} />
+                <Route exact path='/' component={ContractNew} />
                 <Route exact path='/car' component={AMNew} />
             </Switch>
         </BrowserRouter>
