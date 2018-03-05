@@ -13,7 +13,7 @@ class App extends Component {
         <div className = "jumbotron jumbotron-fluid">
           <div className = "container">
             <h2 className = "display-4">Heroku Private Blockchain Admin</h2>
-            
+
             {web3.isConnected() && <p className = "lead">Heroku Smart Contract Administration</p>}
 
             {!web3.isConnected() && <p className = "lead">Initiating the smart contract instance</p>}
@@ -23,7 +23,7 @@ class App extends Component {
 
         <BrowserRouter>
             <Switch>
-                <Route exact path='/' component={ContractNew} />
+                <Route exact path='/admin' component={ContractNew} />
                 <Route exact path='/car' component={AMNew} />
             </Switch>
         </BrowserRouter>
